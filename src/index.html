@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Room Booking System - BCHS</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Main Application -->
+    <div id="mainApp" class="main-app">
+        <!-- Navigation Bar -->
+        <nav class="navbar">
+            <div class="container">
+                <div class="nav-content">
+                    <div class="nav-left">
+                        <h1 class="nav-title">BCHS Booking</h1>
+                        <div class="nav-links">
+                            <button class="nav-btn active" data-view="home">
+                                <span>Home</span>
+                            </button>
+                            <button class="nav-btn" data-view="history">
+                                <span>History</span>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <div class="container main-content">
+            <!-- Home View -->
+            <div id="homeView" class="view active">
+                <div class="page-header">
+                    <h1>Room Booking System</h1>
+                    <p>Select a room and choose your preferred date and time</p>
+                </div>
+
+                <div class="layout-grid">
+                    <!-- Left Sidebar - Rooms -->
+                    <div class="sidebar">
+                        <h2 class="section-title">Rooms</h2>
+                        <div id="roomsList" class="rooms-list">
+                            <!-- Rooms will be dynamically inserted here -->
+                        </div>
+
+                        <!-- Question Bot -->
+                        <div class="question-bot">
+                            <div class="bot-header">
+                                <h3>Quick Help</h3>
+                            </div>
+                            <div class="bot-content">
+                                <p class="bot-description">Need assistance? Ask me anything!</p>
+                                <div class="quick-questions">
+                                    <button class="quick-q-btn" data-question="How do I book?">How do I book?</button>
+                                    <button class="quick-q-btn" data-question="What are the rates?">What are the rates?</button>
+                                    <button class="quick-q-btn" data-question="Cancellation policy?">Cancellation policy?</button>
+                                </div>
+                                <div class="bot-chat-input">
+                                    <input type="text" id="botQuestionInput" placeholder="Ask a question...">
+                                    <button id="botAskBtn" class="btn-ask">Ask</button>
+                                </div>
+                                <div id="botResponse" class="bot-response hidden"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Main Content - Calendar -->
+                    <div class="main-area">
+                        <div id="calendarContainer" class="calendar-container">
+                            <div class="empty-state">
+                                <h3>Select a room to view availability</h3>
+                                <p>Choose from one of the rooms on the left to see the calendar and booking options</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- History View -->
+            <div id="historyView" class="view">
+                <div class="page-header">
+                    <h1>Booking History</h1>
+                    <p>View all your booking requests and their status</p>
+                </div>
+                <div id="bookingsList" class="bookings-list">
+                    <!-- Bookings will be dynamically inserted here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Booking Modal -->
+    <div id="bookingModal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2>Schedule Appointment</h2>
+                <button class="modal-close" id="closeModalBtn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="bookingForm">
+                    <div class="form-row">
+                        <div class="form-column form-column-main">
+                            <h3 class="form-section-title">
+                                <span class="section-icon">✨</span>
+                                Appointment Details
+                            </h3>
+
+                            <div class="form-group">
+                                <label for="meetingTitle">Meeting Title</label>
+                                <input type="text" id="meetingTitle" required placeholder="e.g., Q4 Strategy Planning">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="meetingType">Meeting Type</label>
+                                <select id="meetingType" required>
+                                    <option value="">Select meeting type</option>
+                                    <option value="Team Meeting">Team Meeting</option>
+                                    <option value="Client Meeting">Client Meeting</option>
+                                    <option value="Interview">Interview</option>
+                                    <option value="Presentation">Presentation</option>
+                                    <option value="Workshop">Workshop</option>
+                                    <option value="Training Session">Training Session</option>
+                                    <option value="Board Meeting">Board Meeting</option>
+                                    <option value="Conference Call">Conference Call</option>
+                                    <option value="Brainstorming">Brainstorming Session</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group-row">
+                                <div class="form-group">
+                                    <label for="organizerName">Organizer Name</label>
+                                    <input type="text" id="organizerName" required placeholder="Your full name">
+                                </div>
+                                <div class="form-group">
+                                    <label for="organizerEmail">Organizer Email</label>
+                                    <input type="email" id="organizerEmail" required placeholder="your.email@example.com">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="bookingDate">Meeting Date</label>
+                                <input type="date" id="bookingDate" required>
+                            </div>
+
+                            <!-- Time Selection Mode Toggle -->
+                            <div class="form-group">
+                                <label>Appointment Time</label>
+                                <div class="time-mode-toggle">
+                                    <button type="button" class="time-mode-btn active" data-mode="preset" id="presetModeBtn">
+                                        Preset Slots
+                                    </button>
+                                    <button type="button" class="time-mode-btn" data-mode="custom" id="customModeBtn">
+                                        Custom Time
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Preset Time Slots -->
+                            <div id="presetTimeSection" class="time-section">
+                                <div class="form-group">
+                                    <label for="timeSlot">Select Time Slot</label>
+                                    <select id="timeSlot">
+                                        <option value="">Select time slot</option>
+                                        <option value="07:00-08:00">07:00 - 08:00</option>
+                                        <option value="08:00-09:00">08:00 - 09:00</option>
+                                        <option value="09:00-10:00">09:00 - 10:00</option>
+                                        <option value="10:00-11:00">10:00 - 11:00</option>
+                                        <option value="11:00-12:00">11:00 - 12:00</option>
+                                        <option value="12:00-01:00">12:00 - 01:00</option>
+                                        <option value="01:00-02:00">01:00 - 02:00</option>
+                                        <option value="02:00-03:00">02:00 - 03:00</option>
+                                        <option value="03:00-04:00">03:00 - 04:00</option>
+                                        <option value="04:00-05:00">04:00 - 05:00</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Custom Time Selection -->
+                            <div id="customTimeSection" class="time-section hidden">
+                                <div class="form-group-row">
+                                    <div class="form-group">
+                                        <label for="startTime">Start Time</label>
+                                        <input type="time" id="startTime">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="endTime">End Time</label>
+                                        <input type="time" id="endTime">
+                                    </div>
+                                </div>
+                                <div id="durationDisplay" class="duration-display hidden">
+                                    <span class="duration-icon">⏱️</span>
+                                    <span id="durationText"></span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="attendees">Expected Attendees</label>
+                                <input type="number" id="attendees" min="1" max="200" required placeholder="Number of people attending">
+                                <small class="form-hint">💡 This helps us suggest the right room size</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="purpose">Meeting Purpose</label>
+                                <textarea id="purpose" rows="3" required placeholder="Brief description of the meeting purpose..."></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="requirements">Special Requirements (Optional)</label>
+                                <textarea id="requirements" rows="3" placeholder="Equipment needs, catering, accessibility requirements, etc."></textarea>
+                            </div>
+
+                            <div id="selectedRoomDisplay" class="selected-room-display hidden">
+                                <h4>Selected Room: <span id="selectedRoomName"></span></h4>
+                                <p id="selectedRoomDetails"></p>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary" id="submitBookingBtn">Submit Booking Request</button>
+                                <button type="button" class="btn btn-secondary" id="cancelBookingBtn">Cancel</button>
+                            </div>
+                        </div>
+
+                        <div class="form-column form-column-suggestions">
+                            <h3 class="form-section-title">
+                                <span class="section-icon">🤖</span>
+                                AI Room Suggestions
+                            </h3>
+                            <div id="aiSuggestionsLoading" class="ai-loading hidden">
+                                <div class="spinner"></div>
+                                <p>AI is analyzing your requirements...</p>
+                            </div>
+                            <div id="roomSuggestions" class="room-suggestions">
+                                <p class="suggestion-prompt">Fill in the meeting type and attendee count to get AI-powered room recommendations.</p>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chat Box -->
+    <div id="chatBox" class="chat-box">
+        <div class="chat-header">
+            <h3>🤖 AI Assistant</h3>
+            <button id="closeChatBtn" class="chat-close">−</button>
+        </div>
+        <div class="chat-messages" id="chatMessages">
+            <div class="chat-message bot-message">
+                <p>Hello! I'm your AI booking assistant. How can I help you today?</p>
+            </div>
+        </div>
+        <div class="chat-typing hidden" id="chatTyping">
+            <div class="typing-indicator">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+        <div class="chat-input-container">
+            <input type="text" id="chatInput" placeholder="Type your message...">
+            <button id="sendChatBtn" class="btn-send">Send</button>
+        </div>
+    </div>
+
+    <!-- Chat Toggle Button -->
+    <button id="chatToggleBtn" class="chat-toggle">
+        💬
+    </button>
+
+    <!-- Settings Button -->
+    <button id="settingsBtn" class="settings-btn" title="API Status">
+        ⚙️
+    </button>
+
+    <script src="config.js"></script>
+    <script src="ai-service.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
